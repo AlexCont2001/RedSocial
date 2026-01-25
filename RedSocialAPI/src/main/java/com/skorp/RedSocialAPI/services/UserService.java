@@ -5,10 +5,12 @@ import com.skorp.RedSocialAPI.repos.IUserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -32,11 +34,27 @@ public class UserService {
     }
 
     public String login(User user) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if(authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()
+                    )
+            );
+            User dbUser = userRepo.findByUsername(user.getUsername());
+            return jwtService.generateToken(dbUser);
+
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("Credenciales inválidas");
         }
-        return "fail";
+    }
+
+    public String deleteUser(int id) {
+        Optional<User> user = userRepo.findById(id);
+        if (user.isPresent()) {
+            userRepo.delete(user.get());
+            return "Usuario Eliminado";
+        }
+        return "Usuario Inexistente";
     }
 }

@@ -1,5 +1,6 @@
 package com.skorp.RedSocialAPI.services;
 
+import com.skorp.RedSocialAPI.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,12 +27,13 @@ public class JwtService {
         secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().getName());
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (30*60*1000))) //30 minutos
                 .and()

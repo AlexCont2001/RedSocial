@@ -2,6 +2,7 @@ package com.skorp.RedSocialAPI.models;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -10,6 +11,10 @@ public class User {
     private Integer id;
     private String username;
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public User() {
     }
@@ -42,5 +47,12 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
