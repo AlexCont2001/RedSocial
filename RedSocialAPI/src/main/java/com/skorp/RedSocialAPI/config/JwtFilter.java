@@ -1,7 +1,5 @@
 package com.skorp.RedSocialAPI.config;
 
-import com.skorp.RedSocialAPI.services.JwtService;
-import com.skorp.RedSocialAPI.services.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
