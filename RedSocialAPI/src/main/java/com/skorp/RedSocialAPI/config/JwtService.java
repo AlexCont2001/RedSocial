@@ -4,6 +4,7 @@ import com.skorp.RedSocialAPI.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +28,10 @@ public class JwtService {
         secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
     }
 
-    public String generateToken(User user) {
+    public ResponseEntity<String> generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole().getName());
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(user.getUsername())
@@ -39,6 +40,7 @@ public class JwtService {
                 .and()
                 .signWith(getKey())
                 .compact();
+        return  ResponseEntity.ok(token);
     }
     public SecretKey getKey() {
         byte[] keyBytes =  Base64.getDecoder().decode(secretKey);

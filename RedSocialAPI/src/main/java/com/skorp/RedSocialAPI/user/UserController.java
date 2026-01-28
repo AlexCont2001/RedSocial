@@ -1,5 +1,8 @@
 package com.skorp.RedSocialAPI.user;
 
+import com.skorp.RedSocialAPI.user.dto.UserCreateDTO;
+import com.skorp.RedSocialAPI.user.dto.UserResponseDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +20,22 @@ public class UserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
         return userService.getUsers();
     }
 
     @PostMapping("/register")
-    public User saveUser(@RequestBody User user) {
-        return userService.register(user);
+    public ResponseEntity<UserResponseDTO> saveUser(@RequestBody UserCreateDTO userDTO) {
+        return userService.register(userDTO);
     }
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody User user) {
         return userService.login(user);
     }
 
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         return userService.deleteUser(id);
     }
 }
